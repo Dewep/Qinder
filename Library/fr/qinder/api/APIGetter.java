@@ -11,7 +11,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import eu.epitech.agoraa.Configurations;
+import fr.qinder.conf.Configurations;
 
 public class APIGetter extends AsyncTask<APIRequest, APIResponse, Void> {
 	private DefaultHttpClient _httpClient;
