@@ -1,8 +1,10 @@
 package fr.qinder.api;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
-import android.net.Uri;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.os.AsyncTask;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -11,7 +13,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import fr.qinder.conf.Configurations;
+import fr.qinder.tools.URL;
 
 public class APIGetter extends AsyncTask<APIRequest, APIResponse, Void> {
 	private DefaultHttpClient _httpClient;
@@ -20,15 +22,30 @@ public class APIGetter extends AsyncTask<APIRequest, APIResponse, Void> {
 	//private int _nb_running;
 
 	public APIGetter(Fragment context, boolean dialog) {
-		_httpClient = new DefaultHttpClient();
 		_listener = (APIListener) context;
+		initGetter(context.getActivity(), dialog);
+	}
+
+	public APIGetter(Activity context, boolean dialog) {
+		_listener = (APIListener) context;
+		initGetter(context, dialog);
+	}
+
+	private void initGetter(Activity context, boolean dialog) {
+		_httpClient = new DefaultHttpClient();
 		_progressDialog = null;
 		//_nb_running = 0;
 		if (dialog) {
-			_progressDialog = new ProgressDialog(context.getActivity());
+			_progressDialog = new ProgressDialog(context);
 			_progressDialog.setMessage("Chargement...");
 			_progressDialog.setCanceledOnTouchOutside(false);
 			_progressDialog.show();
+			_progressDialog.setOnCancelListener(new OnCancelListener() {
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					_httpClient.getConnectionManager().shutdown();
+				}
+			});
 		}
 	}
 
@@ -65,12 +82,10 @@ public class APIGetter extends AsyncTask<APIRequest, APIResponse, Void> {
 		for (int i = 0; i < requests.length; i++) {
 			APIResponse response = new APIResponse();
 			response.request = requests[i];
-			Uri.Builder url_builder = new Uri.Builder();
-			url_builder.scheme(Configurations.Schema).authority(Configurations.Host).path(response.request.getPath());
+			String url = response.request.getHost();
 			for (int j = 0; j < response.request.gets.size(); j++) {
-				url_builder.appendQueryParameter(response.request.gets.get(j).getName(), response.request.gets.get(j).getValue());
+				url = URL.addParameter(url, response.request.gets.get(j).getName(), response.request.gets.get(j).getValue());
 			}
-			String url = url_builder.build().toString();
 			if (response.request.isCached() && response.request.posts.size() == 0 && APICache.getInstance().getCache(url) != null) {
 				response.response = APICache.getInstance().getCacheResponse(url);
 				response.data = APICache.getInstance().getCacheData(url);

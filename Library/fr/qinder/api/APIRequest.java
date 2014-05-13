@@ -7,7 +7,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 public class APIRequest {
 	private String identifier;
-	private String path;
+	private String host;
 	private Boolean cached;
 	ArrayList<NameValuePair> headers = new ArrayList<NameValuePair>();
 	ArrayList<NameValuePair> gets = new ArrayList<NameValuePair>();
@@ -15,15 +15,15 @@ public class APIRequest {
 
 	// @TODO: Il faudra penser a gerer les cookies, ca peut etre utile
 
-	public APIRequest(String _identifier, String _path, Boolean _cached) {
+	public APIRequest(String _identifier, String _host, Boolean _cached) {
 		identifier = _identifier;
-		path = _path;
+		host = _host;
 		cached = _cached;
 	}
 
-	public APIRequest(String _identifier, String _path) {
+	public APIRequest(String _identifier, String _host) {
 		identifier = _identifier;
-		path = _path;
+		host = _host;
 		cached = true;
 	}
 
@@ -31,8 +31,8 @@ public class APIRequest {
 		return identifier;
 	}
 
-	public String getPath() {
-		return path;
+	public String getHost() {
+		return host;
 	}
 
 	public Boolean isCached() {

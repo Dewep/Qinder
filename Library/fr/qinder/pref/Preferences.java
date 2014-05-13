@@ -1,4 +1,4 @@
-package fr.qinder.conf;
+package fr.qinder.pref;
 
 import android.content.Context;
 import android.content.SharedPreferences;
