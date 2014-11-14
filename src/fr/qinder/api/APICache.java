@@ -3,17 +3,17 @@ package fr.qinder.api;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.http.HttpResponse;
+import javax.net.ssl.HttpsURLConnection;
 
 import android.graphics.Bitmap;
 
 class APICacheStock {
-	private HttpResponse response;
+	private HttpsURLConnection response;
 	private String data;
 	private Bitmap image;
 	private Long time_add;
 
-	public APICacheStock(HttpResponse _response, String _data) {
+	public APICacheStock(HttpsURLConnection _response, String _data) {
 		response = _response;
 		data = _data;
 		image = null;
@@ -31,7 +31,7 @@ class APICacheStock {
 		return ((System.currentTimeMillis() / 1000) - (image == null ? 1 : 5) * 60 < time_add);
 	}
 
-	public HttpResponse getResponse() {
+	public HttpsURLConnection getResponse() {
 		return response;
 	}
 
@@ -48,7 +48,7 @@ public class APICache {
 
 	private Map<String, APICacheStock> map = new HashMap<String, APICacheStock>();
 
-	public void addCache(String url, HttpResponse response, String data) {
+	public void addCache(String url, HttpsURLConnection response, String data) {
 		map.put(url, new APICacheStock(response, data));
 	}
 	public void addCache(String url, Bitmap image) {
@@ -67,7 +67,7 @@ public class APICache {
 		return stock;
 	}
 
-	public HttpResponse getCacheResponse(String url) {
+	public HttpsURLConnection getCacheResponse(String url) {
 		APICacheStock stock = getCache(url);
 		if (stock == null)
 			return null;

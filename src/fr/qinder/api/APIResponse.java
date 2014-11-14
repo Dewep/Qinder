@@ -1,10 +1,10 @@
 package fr.qinder.api;
 
-import org.apache.http.HttpResponse;
+import javax.net.ssl.HttpsURLConnection;
 
 public class APIResponse {
 	public APIRequest request;
-	public HttpResponse response;
+	public HttpsURLConnection response;
 	public String data;
 	public int code;
 }
