@@ -5,38 +5,27 @@ import java.util.ArrayList;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-public class APIRequest {
-	private String identifier;
-	private String host;
-	private Boolean cached;
-	ArrayList<NameValuePair> headers = new ArrayList<NameValuePair>();
-	ArrayList<NameValuePair> gets = new ArrayList<NameValuePair>();
-	ArrayList<NameValuePair> posts = new ArrayList<NameValuePair>();
+public abstract class APIRequest {
+	public String url;
+	public ArrayList<NameValuePair> headers = new ArrayList<NameValuePair>();
+	public ArrayList<NameValuePair> gets = new ArrayList<NameValuePair>();
+	public ArrayList<NameValuePair> posts = new ArrayList<NameValuePair>();
+	public APIResponse response = null;
 
-	// @TODO: Il faudra penser a gerer les cookies, ca peut etre utile
-
-	public APIRequest(String _identifier, String _host, Boolean _cached) {
-		identifier = _identifier;
-		host = _host;
-		cached = _cached;
+	public APIRequest(String _url) {
+		url = _url;
 	}
 
-	public APIRequest(String _identifier, String _host) {
-		identifier = _identifier;
-		host = _host;
-		cached = true;
+	public void preExecute(APIResponse response) {
 	}
 
-	public String getId() {
-		return identifier;
+	public void postExecute(APIResponse response) {
 	}
 
-	public String getHost() {
-		return host;
-	}
+	public abstract void onResult(APIResponse response);
 
 	public Boolean isCached() {
-		return cached;
+		return true;
 	}
 
 	public void addGet(String key, String value) {
