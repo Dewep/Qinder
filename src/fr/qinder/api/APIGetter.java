@@ -73,7 +73,7 @@ public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
 	protected void onProgressUpdate(APIRequest... requests) {
 		super.onProgressUpdate(requests);
 		for (int i = 0; i < requests.length; i++) {
-			requests[i].onResult(requests[i].response);
+			requests[i].onResult();
 		}
 	}
 
@@ -91,7 +91,7 @@ public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
 			response.code = 0;
 			response.data = null;
 			response.response = null;
-			requests[i].preExecute(response);
+			requests[i].preExecute();
 			for (int j = 0; j < requests[i].gets.size(); j++) {
 				requests[i].url = fr.qinder.tools.URL.addParameter(requests[i].url, requests[i].gets.get(j).getName(), requests[i].gets.get(j).getValue());
 			}
@@ -120,7 +120,7 @@ public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
 					e.printStackTrace();
 				}
 			}
-			requests[i].postExecute(response);
+			requests[i].postExecute();
 			publishProgress(requests[i]);
 		}
 		return null;

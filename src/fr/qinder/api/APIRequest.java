@@ -16,13 +16,13 @@ public abstract class APIRequest {
 		url = _url;
 	}
 
-	public void preExecute(APIResponse response) {
+	public void preExecute() {
 	}
 
-	public void postExecute(APIResponse response) {
+	public void postExecute() {
 	}
 
-	public abstract void onResult(APIResponse response);
+	public abstract void onResult();
 
 	public Boolean isCached() {
 		return true;
