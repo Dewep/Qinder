@@ -4,6 +4,28 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class JSON {
+	public static JSONObject getObject(String str) {
+		JSONObject obj = null;
+		try {
+			obj = new JSONObject(str);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return obj;
+	}
+
+	public static String parse(String obj, String path, String defValue) {
+		return parse(getObject(obj), path, defValue);
+	}
+
+	public static int parse(String obj, String path, int defValue) {
+		return parse(getObject(obj), path, defValue);
+	}
+
+	public static double parse(String obj, String path, double defValue) {
+		return parse(getObject(obj), path, defValue);
+	}
+
 	public static String parse(JSONObject obj, String path, String defValue) {
 		if (obj == null)
 			return defValue;

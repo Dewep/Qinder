@@ -6,4 +6,5 @@ public class APIResponse {
 	public HttpsURLConnection response;
 	public String data;
 	public int code;
+	public Boolean isCache;
 }

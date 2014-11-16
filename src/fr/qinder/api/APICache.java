@@ -28,7 +28,7 @@ class APICacheStock {
 	}
 
 	public boolean isValid() {
-		return ((System.currentTimeMillis() / 1000) - (image == null ? 1 : 5) * 60 < time_add);
+		return ((System.currentTimeMillis() / 1000) - (image == null ? 2 : 5) * 60 < time_add);
 	}
 
 	public HttpsURLConnection getResponse() {
@@ -52,7 +52,7 @@ public class APICache {
 		map.put(url, new APICacheStock(response, data));
 	}
 	public void addCache(String url, Bitmap image) {
-		map.put(url, new APICacheStock(image));
+		//map.put(url, new APICacheStock(image));
 	}
 
 	public APICacheStock getCache(String url) {

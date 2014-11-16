@@ -45,10 +45,10 @@ public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
 			URL url = new URL(s_url);
 			HttpsURLConnection url_connection = (HttpsURLConnection) url.openConnection();
 			url_connection.setRequestMethod("GET");
-			url_connection.setDoInput(true);
-			url_connection.setDoOutput(true);
-			if (request.posts != null) {
+			if (request.posts.size() != 0) {
 				url_connection.setRequestMethod("POST");
+				url_connection.setDoInput(true);
+				url_connection.setDoOutput(true);
 				UrlEncodedFormEntity entity = new UrlEncodedFormEntity(request.posts);
 				OutputStream post = url_connection.getOutputStream();
 				 entity.writeTo(post);
@@ -99,8 +99,15 @@ public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
 				response.response = APICache.getInstance().getCacheResponse(requests[i].url);
 				response.data = APICache.getInstance().getCacheData(requests[i].url);
 				response.code = 200;
+				response.isCache = true;
 			} else {
 				response.response = post(requests[i].url, requests[0]);
+				response.isCache = false;
+				try {
+					response.code = response.response.getResponseCode();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 				try {
 					BufferedReader reader = new BufferedReader(new InputStreamReader(getInputStream(response.response), "UTF-8"));
 					StringBuilder builder = new StringBuilder();
