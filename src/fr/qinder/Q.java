@@ -31,4 +31,8 @@ public class Q {
 	public final static Activity get() {
 		return Q.init(null).getActivity();
 	}
+
+	public final static String getString(int id) {
+		return get().getResources().getString(id);
+	}
 }
