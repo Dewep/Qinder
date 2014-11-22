@@ -18,6 +18,10 @@ public class APIRequestsListener {
 			return this;
 	}
 
+	public void cancelTask() {
+		_getter.cancel(true);
+	}
+
 	public void execute() {
 		APIRequest[] array = new APIRequest[_requests.size()];
 		_requests.toArray(array);
