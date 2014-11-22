@@ -47,8 +47,23 @@ public class APICookie {
 		try {
 			return APICookie.getInstance()._cookiemanager.getCookieStore().get(new URI(host));
 		} catch (URISyntaxException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 		return null;
+	}
+
+	public final static void remove(String host) {
+		try {
+			URI uri = new URI(host);
+			for (HttpCookie cookie : APICookie.getInstance()._cookiemanager.getCookieStore().get(uri)) {
+				APICookie.getInstance()._cookiemanager.getCookieStore().remove(uri, cookie);
+			}
+		} catch (URISyntaxException e) {
+			// e.printStackTrace();
+		}
+	}
+
+	public final static void removeAll() {
+		APICookie.getInstance()._cookiemanager.getCookieStore().removeAll();
 	}
 }
