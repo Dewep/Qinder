@@ -6,10 +6,13 @@ import org.json.JSONObject;
 public class JSON {
 	public static JSONObject getObject(String str) {
 		JSONObject obj = null;
+		if (str == null) {
+			return obj;
+		}
 		try {
 			obj = new JSONObject(str);
 		} catch (JSONException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 		return obj;
 	}

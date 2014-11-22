@@ -57,9 +57,9 @@ public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
 			url_connection.connect();
 			return url_connection;
 		} catch (IOException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		} catch (Exception e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 		return null;
 	}
@@ -78,8 +78,9 @@ public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
 	}
 
 	protected InputStream getInputStream(HttpsURLConnection request) throws IOException {
-		if (request.getResponseCode() == 200)
+		if (request.getResponseCode() == 200) {
 			return request.getInputStream();
+		}
 		return request.getErrorStream();
 	}
 
@@ -104,20 +105,24 @@ public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
 				response.response = post(requests[i].url, requests[0]);
 				response.isCache = false;
 				try {
-					response.code = response.response.getResponseCode();
-				} catch (IOException e1) {
-					e1.printStackTrace();
+					if (response.response != null) {
+						response.code = response.response.getResponseCode();
+					}
+				} catch (IOException e) {
+					// e.printStackTrace();
 				}
 				try {
 					BufferedReader reader = new BufferedReader(new InputStreamReader(getInputStream(response.response), "UTF-8"));
 					StringBuilder builder = new StringBuilder();
-					for (String line = null; (line = reader.readLine()) != null;)
+					for (String line = null; (line = reader.readLine()) != null;) {
 						builder.append(line).append("\n");
+					}
 					response.data = builder.toString();
-					if (requests[i].isCached() && requests[i].posts.size() == 0 && response.code == 200)
+					if (requests[i].isCached() && requests[i].posts.size() == 0 && response.code == 200) {
 						APICache.getInstance().addCache(requests[i].url, response.response, response.data);
+					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					// e.printStackTrace();
 				}
 			}
 			requests[i].postExecute();
@@ -130,10 +135,11 @@ public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
 	protected void onPostExecute(Void response) {
 		super.onPostExecute(response);
 		try {
-			if (_progressDialog != null && _progressDialog.isShowing())
+			if (_progressDialog != null && _progressDialog.isShowing()) {
 				_progressDialog.cancel();
+			}
 		} catch (Exception e) {
-			// nothing
+			// e.printStackTrace();
 		}
 	}
 }
