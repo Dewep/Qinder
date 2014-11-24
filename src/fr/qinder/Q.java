@@ -28,59 +28,59 @@ import android.app.Activity;
  */
 public final class Q {
 
-	private static volatile Q sInstance = null;
-	private Activity mActivity = null;
+    private static volatile Q sInstance = null;
+    private Activity mActivity = null;
 
-	/**
-	 * @param activity
-	 *            Reference to an activity that will be use later
-	 */
-	private Q(Activity activity) {
-		mActivity = activity;
-	}
+    /**
+     * @param activity
+     *            Reference to an activity that will be use later
+     */
+    private Q(Activity activity) {
+        mActivity = activity;
+    }
 
-	/**
-	 * @return Reference the activity saved
-	 */
-	public Activity getActivity() {
-		return mActivity;
-	}
+    /**
+     * @return Reference the activity saved
+     */
+    public Activity getActivity() {
+        return mActivity;
+    }
 
-	/**
-	 * @param activity
-	 *            Reference to the activity for the first time. Can be null.
-	 * @return Reference to the instance of this class
-	 * @throws NullPointerException
-	 *             If activity is null and Q not initialized yet
-	 */
-	public static final Q init(Activity activity) throws IllegalArgumentException {
-		if (Q.sInstance == null) {
-			synchronized (Q.class) {
-				if (Q.sInstance == null) {
-					if (activity == null) {
-						throw new IllegalArgumentException();
-					}
-					Q.sInstance = new Q(activity);
-				}
-			}
-		}
-		return Q.sInstance;
-	}
+    /**
+     * @param activity
+     *            Reference to the activity for the first time. Can be null.
+     * @return Reference to the instance of this class
+     * @throws NullPointerException
+     *             If activity is null and Q not initialized yet
+     */
+    public static final Q init(Activity activity) throws IllegalArgumentException {
+        if (Q.sInstance == null) {
+            synchronized (Q.class) {
+                if (Q.sInstance == null) {
+                    if (activity == null) {
+                        throw new IllegalArgumentException();
+                    }
+                    Q.sInstance = new Q(activity);
+                }
+            }
+        }
+        return Q.sInstance;
+    }
 
-	/**
-	 * @return Reference to the activity saved
-	 */
-	public static final Activity get() {
-		return Q.init(null).getActivity();
-	}
+    /**
+     * @return Reference to the activity saved
+     */
+    public static final Activity get() {
+        return Q.init(null).getActivity();
+    }
 
-	/**
-	 * @param id
-	 *            Identifier of the string that you want
-	 * @return String corresponding to this identifier
-	 */
-	public static final String getString(int id) {
-		return get().getResources().getString(id);
-	}
+    /**
+     * @param id
+     *            Identifier of the string that you want
+     * @return String corresponding to this identifier
+     */
+    public static final String getString(int id) {
+        return get().getResources().getString(id);
+    }
 
 }

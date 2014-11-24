@@ -41,128 +41,127 @@ import org.apache.http.impl.client.DefaultHttpClient;
  * @author Colin Julien
  */
 public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
-	private HttpClient _httpClient;
-	private ProgressDialog _progressDialog;
+    private HttpClient _httpClient;
+    private ProgressDialog _progressDialog;
 
-	public APIGetter(Activity dialog) {
-		APICookie.getInstance();
-		_httpClient = new DefaultHttpClient();
-		_progressDialog = null;
-		if (dialog != null) {
-			_progressDialog = new ProgressDialog(dialog);
-			_progressDialog.setMessage("Chargement...");
-			_progressDialog.setCanceledOnTouchOutside(false);
-			_progressDialog.show();
-			_progressDialog.setOnCancelListener(new OnCancelListener() {
-				@Override
-				public void onCancel(DialogInterface dialog) {
-					_httpClient.getConnectionManager().shutdown();
-				}
-			});
-		}
-	}
+    public APIGetter(Activity dialog) {
+        APICookie.getInstance();
+        _httpClient = new DefaultHttpClient();
+        _progressDialog = null;
+        if (dialog != null) {
+            _progressDialog = new ProgressDialog(dialog);
+            _progressDialog.setMessage("Chargement...");
+            _progressDialog.setCanceledOnTouchOutside(false);
+            _progressDialog.show();
+            _progressDialog.setOnCancelListener(new OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    _httpClient.getConnectionManager().shutdown();
+                }
+            });
+        }
+    }
 
-	protected HttpsURLConnection post(String s_url, APIRequest request)
-	{
-		try {
-			URL url = new URL(s_url);
-			HttpsURLConnection url_connection = (HttpsURLConnection) url.openConnection();
-			url_connection.setRequestMethod("GET");
-			if (request.posts.size() != 0) {
-				url_connection.setRequestMethod("POST");
-				url_connection.setDoInput(true);
-				url_connection.setDoOutput(true);
-				UrlEncodedFormEntity entity = new UrlEncodedFormEntity(request.posts);
-				OutputStream post = url_connection.getOutputStream();
-				 entity.writeTo(post);
-				 post.flush();
-			}
-			url_connection.connect();
-			return url_connection;
-		} catch (IOException e) {
-			// e.printStackTrace();
-		} catch (Exception e) {
-			// e.printStackTrace();
-		}
-		return null;
-	}
+    protected HttpsURLConnection post(String s_url, APIRequest request) {
+        try {
+            URL url = new URL(s_url);
+            HttpsURLConnection url_connection = (HttpsURLConnection) url.openConnection();
+            url_connection.setRequestMethod("GET");
+            if (request.posts.size() != 0) {
+                url_connection.setRequestMethod("POST");
+                url_connection.setDoInput(true);
+                url_connection.setDoOutput(true);
+                UrlEncodedFormEntity entity = new UrlEncodedFormEntity(request.posts);
+                OutputStream post = url_connection.getOutputStream();
+                entity.writeTo(post);
+                post.flush();
+            }
+            url_connection.connect();
+            return url_connection;
+        } catch (IOException e) {
+            // e.printStackTrace();
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return null;
+    }
 
-	@Override
-	protected void onPreExecute() {
-		super.onPreExecute();
-	}
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+    }
 
-	@Override
-	protected void onProgressUpdate(APIRequest... requests) {
-		super.onProgressUpdate(requests);
-		for (int i = 0; i < requests.length; i++) {
-			requests[i].onResult();
-		}
-	}
+    @Override
+    protected void onProgressUpdate(APIRequest... requests) {
+        super.onProgressUpdate(requests);
+        for (int i = 0; i < requests.length; i++) {
+            requests[i].onResult();
+        }
+    }
 
-	protected InputStream getInputStream(HttpsURLConnection request) throws IOException {
-		if (request.getResponseCode() == 200) {
-			return request.getInputStream();
-		}
-		return request.getErrorStream();
-	}
+    protected InputStream getInputStream(HttpsURLConnection request) throws IOException {
+        if (request.getResponseCode() == 200) {
+            return request.getInputStream();
+        }
+        return request.getErrorStream();
+    }
 
-	@Override
-	protected Void doInBackground(APIRequest... requests) {
-		for (int i = 0; i < requests.length; i++) {
-			requests[i].response =  new APIResponse();
-			APIResponse response = requests[i].response;
-			response.code = 0;
-			response.data = null;
-			response.response = null;
-			requests[i].preExecute();
-			for (int j = 0; j < requests[i].gets.size(); j++) {
-				requests[i].url = fr.qinder.tools.URL.addParameter(requests[i].url, requests[i].gets.get(j).getName(), requests[i].gets.get(j).getValue());
-			}
-			if (requests[i].isCached() && requests[i].posts.size() == 0 && APICache.getInstance().getCache(requests[i].url) != null) {
-				response.response = APICache.getInstance().getCacheResponse(requests[i].url);
-				response.data = APICache.getInstance().getCacheData(requests[i].url);
-				response.code = 200;
-				response.isCache = true;
-			} else {
-				response.response = post(requests[i].url, requests[0]);
-				response.isCache = false;
-				try {
-					if (response.response != null) {
-						response.code = response.response.getResponseCode();
-					}
-				} catch (IOException e) {
-					// e.printStackTrace();
-				}
-				try {
-					BufferedReader reader = new BufferedReader(new InputStreamReader(getInputStream(response.response), "UTF-8"));
-					StringBuilder builder = new StringBuilder();
-					for (String line = null; (line = reader.readLine()) != null;) {
-						builder.append(line).append("\n");
-					}
-					response.data = builder.toString();
-					if (requests[i].isCached() && requests[i].posts.size() == 0 && response.code == 200) {
-						APICache.getInstance().addCache(requests[i].url, response.response, response.data);
-					}
-				} catch (Exception e) {
-					// e.printStackTrace();
-				}
-			}
-			requests[i].postExecute();
-			publishProgress(requests[i]);
-		}
-		return null;
-	}
+    @Override
+    protected Void doInBackground(APIRequest... requests) {
+        for (int i = 0; i < requests.length; i++) {
+            requests[i].response = new APIResponse();
+            APIResponse response = requests[i].response;
+            response.code = 0;
+            response.data = null;
+            response.response = null;
+            requests[i].preExecute();
+            for (int j = 0; j < requests[i].gets.size(); j++) {
+                requests[i].url = fr.qinder.tools.URL.addParameter(requests[i].url, requests[i].gets.get(j).getName(), requests[i].gets.get(j).getValue());
+            }
+            if (requests[i].isCached() && requests[i].posts.size() == 0 && APICache.getInstance().getCache(requests[i].url) != null) {
+                response.response = APICache.getInstance().getCacheResponse(requests[i].url);
+                response.data = APICache.getInstance().getCacheData(requests[i].url);
+                response.code = 200;
+                response.isCache = true;
+            } else {
+                response.response = post(requests[i].url, requests[0]);
+                response.isCache = false;
+                try {
+                    if (response.response != null) {
+                        response.code = response.response.getResponseCode();
+                    }
+                } catch (IOException e) {
+                    // e.printStackTrace();
+                }
+                try {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(getInputStream(response.response), "UTF-8"));
+                    StringBuilder builder = new StringBuilder();
+                    for (String line = null; (line = reader.readLine()) != null;) {
+                        builder.append(line).append("\n");
+                    }
+                    response.data = builder.toString();
+                    if (requests[i].isCached() && requests[i].posts.size() == 0 && response.code == 200) {
+                        APICache.getInstance().addCache(requests[i].url, response.response, response.data);
+                    }
+                } catch (Exception e) {
+                    // e.printStackTrace();
+                }
+            }
+            requests[i].postExecute();
+            publishProgress(requests[i]);
+        }
+        return null;
+    }
 
-	@Override
-	protected void onPostExecute(Void response) {
-		super.onPostExecute(response);
-		try {
-			if (_progressDialog != null && _progressDialog.isShowing()) {
-				_progressDialog.cancel();
-			}
-		} catch (Exception e) {
-			// e.printStackTrace();
-		}
-	}
+    @Override
+    protected void onPostExecute(Void response) {
+        super.onPostExecute(response);
+        try {
+            if (_progressDialog != null && _progressDialog.isShowing()) {
+                _progressDialog.cancel();
+            }
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+    }
 }

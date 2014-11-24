@@ -28,44 +28,70 @@ import java.net.URLEncoder;
  */
 public final class URL {
 
-	/**
-	 * Constructor, not called, because this is an Utility Class.
-	 */
-	private URL() {
-	}
+    /**
+     * Constructor, not called, because this is an Utility Class.
+     */
+    private URL() {
+    }
 
-	/**
-	 * Add a parameter to an URL.
-	 * 
-	 * @param url
-	 *            String of the URL
-	 * @param key
-	 *            String of the key
-	 * @param value
-	 *            String of the value for this key
-	 * @return The URL with this additional parameter
-	 */
-	public static String addParameter(String url, String key, String value) {
-		int indexQuery = url.indexOf('?');
-		int indexHash = url.indexOf('#');
-		try {
-			String newParam;
-			if (indexQuery == -1) {
-				newParam = "?";
-			} else {
-				newParam = "&";
-			}
-			newParam += URLEncoder.encode(key, "UTF-8");
-			newParam += '=';
-			newParam += URLEncoder.encode(value, "UTF-8");
-			if (indexHash == -1) {
-				return url + newParam;
-			} else {
-				return url.substring(0, indexHash) + newParam + url.substring(indexHash);
-			}
-		} catch (UnsupportedEncodingException e) {
-			return url;
-		}
-	}
+    /**
+     * Get the separator
+     * 
+     * @param url
+     *            String of the URL
+     * @return The URL with this additional parameter
+     */
+    private static Character getSeparator(String url) {
+        Character sep;
+
+        if (url.indexOf('?') == -1) {
+            sep = '?';
+        } else {
+            sep = '&';
+        }
+        return sep;
+    }
+
+    /**
+     * Add a string before the hash in an URL.
+     * 
+     * @param url
+     *            String of the URL
+     * @param newParameter
+     *            String of the new parameter
+     * @return The URL with the new parameter
+     */
+    private static String addStringBeforeHash(String url, String newParameter) {
+        int indexHash = url.indexOf('#');
+
+        if (indexHash == -1) {
+            url += newParameter;
+        } else {
+            url = url.substring(0, indexHash) + newParameter + url.substring(indexHash);
+        }
+        return url;
+    }
+
+    /**
+     * Add a parameter to an URL.
+     * 
+     * @param url
+     *            String of the URL
+     * @param key
+     *            String of the key
+     * @param value
+     *            String of the value for this key
+     * @return The URL with this additional parameter
+     */
+    public static String addParameter(String url, String key, String value) {
+        String newParameter;
+        try {
+            newParameter = getSeparator(url) + URLEncoder.encode(key, "UTF-8") + '=' + URLEncoder.encode(value, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            newParameter = "";
+        }
+        url = addStringBeforeHash(url, newParameter);
+        return url;
+    }
 
 }

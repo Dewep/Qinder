@@ -24,5 +24,5 @@ package fr.qinder.api;
  * @author Colin Julien
  */
 public interface APICallback {
-	public void onResult();
+    public void onResult();
 }

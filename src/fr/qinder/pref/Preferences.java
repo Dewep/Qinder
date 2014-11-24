@@ -30,133 +30,133 @@ import android.content.SharedPreferences;
  */
 public final class Preferences {
 
-	/**
-	 * Constructor, not called, because this is an Utility Class.
-	 */
-	private Preferences() {
-	}
+    /**
+     * Constructor, not called, because this is an Utility Class.
+     */
+    private Preferences() {
+    }
 
-	/**
-	 * @param namespace
-	 *            NameSpace where the information is stocked.
-	 * @param key
-	 *            Key of the information.
-	 * @return True if the information exists in the NameSpace, False else.
-	 */
-	public static boolean exist(String namespace, String key) {
-		SharedPreferences pref = Q.get().getSharedPreferences(namespace, Context.MODE_PRIVATE);
-		if (pref == null) {
-			return false;
-		}
-		return pref.contains(key);
-	}
+    /**
+     * @param namespace
+     *            NameSpace where the information is stocked.
+     * @param key
+     *            Key of the information.
+     * @return True if the information exists in the NameSpace, False else.
+     */
+    public static boolean exist(String namespace, String key) {
+        SharedPreferences pref = Q.get().getSharedPreferences(namespace, Context.MODE_PRIVATE);
+        if (pref == null) {
+            return false;
+        }
+        return pref.contains(key);
+    }
 
-	/**
-	 * @param namespace
-	 *            NameSpace where the information is stocked.
-	 * @param key
-	 *            Key of the information.
-	 * @param defValue
-	 *            Default value if the key not exists in the NameSpace.
-	 * @return String of the value or defValue.
-	 */
-	public static String get(String namespace, String key, String defValue) {
-		SharedPreferences pref = Q.get().getSharedPreferences(namespace, Context.MODE_PRIVATE);
-		if (pref == null) {
-			return defValue;
-		}
-		return pref.getString(key, defValue);
-	}
+    /**
+     * @param namespace
+     *            NameSpace where the information is stocked.
+     * @param key
+     *            Key of the information.
+     * @param defValue
+     *            Default value if the key not exists in the NameSpace.
+     * @return String of the value or defValue.
+     */
+    public static String get(String namespace, String key, String defValue) {
+        SharedPreferences pref = Q.get().getSharedPreferences(namespace, Context.MODE_PRIVATE);
+        if (pref == null) {
+            return defValue;
+        }
+        return pref.getString(key, defValue);
+    }
 
-	/**
-	 * @param namespace
-	 *            NameSpace where the information is stocked.
-	 * @param key
-	 *            Key of the information.
-	 * @param defValue
-	 *            Default value if the key not exists in the NameSpace.
-	 * @return Int of the value or defValue.
-	 */
-	public static int get(String namespace, String key, int defValue) {
-		SharedPreferences pref = Q.get().getSharedPreferences(namespace, Context.MODE_PRIVATE);
-		if (pref == null) {
-			return defValue;
-		}
-		return pref.getInt(key, defValue);
-	}
+    /**
+     * @param namespace
+     *            NameSpace where the information is stocked.
+     * @param key
+     *            Key of the information.
+     * @param defValue
+     *            Default value if the key not exists in the NameSpace.
+     * @return Int of the value or defValue.
+     */
+    public static int get(String namespace, String key, int defValue) {
+        SharedPreferences pref = Q.get().getSharedPreferences(namespace, Context.MODE_PRIVATE);
+        if (pref == null) {
+            return defValue;
+        }
+        return pref.getInt(key, defValue);
+    }
 
-	/**
-	 * @param namespace
-	 *            NameSpace where the information is stocked.
-	 * @param key
-	 *            Key of the information.
-	 * @param defValue
-	 *            Default value if the key not exists in the NameSpace.
-	 * @return Boolean of the value or defValue.
-	 */
-	public static boolean get(String namespace, String key, boolean defValue) {
-		SharedPreferences pref = Q.get().getSharedPreferences(namespace, Context.MODE_PRIVATE);
-		if (pref == null) {
-			return defValue;
-		}
-		return pref.getBoolean(key, defValue);
-	}
+    /**
+     * @param namespace
+     *            NameSpace where the information is stocked.
+     * @param key
+     *            Key of the information.
+     * @param defValue
+     *            Default value if the key not exists in the NameSpace.
+     * @return Boolean of the value or defValue.
+     */
+    public static boolean get(String namespace, String key, boolean defValue) {
+        SharedPreferences pref = Q.get().getSharedPreferences(namespace, Context.MODE_PRIVATE);
+        if (pref == null) {
+            return defValue;
+        }
+        return pref.getBoolean(key, defValue);
+    }
 
-	/**
-	 * @param namespace
-	 *            NameSpace where the information is stocked.
-	 * @param key
-	 *            Key of the information.
-	 * @param value
-	 *            Value of the key in the NameSpace to saved.
-	 */
-	public static void set(String namespace, String key, String value) {
-		SharedPreferences pref = Q.get().getSharedPreferences(namespace, Context.MODE_PRIVATE);
-		if (pref == null)
-			return;
-		SharedPreferences.Editor editor = pref.edit();
-		if (editor == null)
-			return;
-		editor.putString(key, value);
-		editor.commit();
-	}
+    /**
+     * @param namespace
+     *            NameSpace where the information is stocked.
+     * @param key
+     *            Key of the information.
+     * @param value
+     *            Value of the key in the NameSpace to saved.
+     */
+    public static void set(String namespace, String key, String value) {
+        SharedPreferences pref = Q.get().getSharedPreferences(namespace, Context.MODE_PRIVATE);
+        if (pref == null)
+            return;
+        SharedPreferences.Editor editor = pref.edit();
+        if (editor == null)
+            return;
+        editor.putString(key, value);
+        editor.commit();
+    }
 
-	/**
-	 * @param namespace
-	 *            NameSpace where the information is stocked.
-	 * @param key
-	 *            Key of the information.
-	 * @param value
-	 *            Value of the key in the NameSpace to saved.
-	 */
-	public static void set(String namespace, String key, int value) {
-		SharedPreferences pref = Q.get().getSharedPreferences(namespace, Context.MODE_PRIVATE);
-		if (pref == null)
-			return;
-		SharedPreferences.Editor editor = pref.edit();
-		if (editor == null)
-			return;
-		editor.putInt(key, value);
-		editor.commit();
-	}
+    /**
+     * @param namespace
+     *            NameSpace where the information is stocked.
+     * @param key
+     *            Key of the information.
+     * @param value
+     *            Value of the key in the NameSpace to saved.
+     */
+    public static void set(String namespace, String key, int value) {
+        SharedPreferences pref = Q.get().getSharedPreferences(namespace, Context.MODE_PRIVATE);
+        if (pref == null)
+            return;
+        SharedPreferences.Editor editor = pref.edit();
+        if (editor == null)
+            return;
+        editor.putInt(key, value);
+        editor.commit();
+    }
 
-	/**
-	 * @param namespace
-	 *            NameSpace where the information is stocked.
-	 * @param key
-	 *            Key of the information.
-	 * @param value
-	 *            Value of the key in the NameSpace to saved.
-	 */
-	public static void set(String namespace, String key, boolean value) {
-		SharedPreferences pref = Q.get().getSharedPreferences(namespace, Context.MODE_PRIVATE);
-		if (pref == null)
-			return;
-		SharedPreferences.Editor editor = pref.edit();
-		if (editor == null)
-			return;
-		editor.putBoolean(key, value);
-		editor.commit();
-	}
+    /**
+     * @param namespace
+     *            NameSpace where the information is stocked.
+     * @param key
+     *            Key of the information.
+     * @param value
+     *            Value of the key in the NameSpace to saved.
+     */
+    public static void set(String namespace, String key, boolean value) {
+        SharedPreferences pref = Q.get().getSharedPreferences(namespace, Context.MODE_PRIVATE);
+        if (pref == null)
+            return;
+        SharedPreferences.Editor editor = pref.edit();
+        if (editor == null)
+            return;
+        editor.putBoolean(key, value);
+        editor.commit();
+    }
 
 }

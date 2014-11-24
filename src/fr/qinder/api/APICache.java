@@ -31,92 +31,92 @@ import android.graphics.Bitmap;
  * @author Colin Julien
  */
 class APICacheStock {
-	private HttpsURLConnection response;
-	private String data;
-	private Bitmap image;
-	private Long time_add;
+    private HttpsURLConnection response;
+    private String data;
+    private Bitmap image;
+    private Long time_add;
 
-	public APICacheStock(HttpsURLConnection _response, String _data) {
-		response = _response;
-		data = _data;
-		image = null;
-		time_add = System.currentTimeMillis() / 1000;
-	}
+    public APICacheStock(HttpsURLConnection _response, String _data) {
+        response = _response;
+        data = _data;
+        image = null;
+        time_add = System.currentTimeMillis() / 1000;
+    }
 
-	public APICacheStock(Bitmap _image) {
-		response = null;
-		data = null;
-		image = _image;
-		time_add = System.currentTimeMillis() / 1000;
-	}
+    public APICacheStock(Bitmap _image) {
+        response = null;
+        data = null;
+        image = _image;
+        time_add = System.currentTimeMillis() / 1000;
+    }
 
-	public boolean isValid() {
-		return ((System.currentTimeMillis() / 1000) - (image == null ? 2 : 5) * 60 < time_add);
-	}
+    public boolean isValid() {
+        return ((System.currentTimeMillis() / 1000) - (image == null ? 2 : 5) * 60 < time_add);
+    }
 
-	public HttpsURLConnection getResponse() {
-		return response;
-	}
+    public HttpsURLConnection getResponse() {
+        return response;
+    }
 
-	public Bitmap getImage() {
-		return image;
-	}
+    public Bitmap getImage() {
+        return image;
+    }
 
-	public String getData() {
-		return data;
-	}
+    public String getData() {
+        return data;
+    }
 }
 
 public class APICache {
 
-	private Map<String, APICacheStock> map = new HashMap<String, APICacheStock>();
+    private Map<String, APICacheStock> map = new HashMap<String, APICacheStock>();
 
-	public void addCache(String url, HttpsURLConnection response, String data) {
-		map.put(url, new APICacheStock(response, data));
-	}
-	public void addCache(String url, Bitmap image) {
-		//map.put(url, new APICacheStock(image));
-	}
+    public void addCache(String url, HttpsURLConnection response, String data) {
+        map.put(url, new APICacheStock(response, data));
+    }
 
-	public APICacheStock getCache(String url) {
-		APICacheStock stock = map.get(url);
-		if (stock == null)
-			return null;
-		if (!stock.isValid())
-		{
-			map.remove(url);
-			return null;
-		}
-		return stock;
-	}
+    public void addCache(String url, Bitmap image) {
+        // map.put(url, new APICacheStock(image));
+    }
 
-	public HttpsURLConnection getCacheResponse(String url) {
-		APICacheStock stock = getCache(url);
-		if (stock == null)
-			return null;
-		return stock.getResponse();
-	}
+    public APICacheStock getCache(String url) {
+        APICacheStock stock = map.get(url);
+        if (stock == null)
+            return null;
+        if (!stock.isValid()) {
+            map.remove(url);
+            return null;
+        }
+        return stock;
+    }
 
-	public String getCacheData(String url) {
-		APICacheStock stock = getCache(url);
-		if (stock == null)
-			return null;
-		return stock.getData();
-	}
+    public HttpsURLConnection getCacheResponse(String url) {
+        APICacheStock stock = getCache(url);
+        if (stock == null)
+            return null;
+        return stock.getResponse();
+    }
 
-	public Bitmap getCacheImage(String url) {
-		APICacheStock stock = getCache(url);
-		if (stock == null)
-			return null;
-		return stock.getImage();
-	}
+    public String getCacheData(String url) {
+        APICacheStock stock = getCache(url);
+        if (stock == null)
+            return null;
+        return stock.getData();
+    }
 
-	private static APICache Singleton = null;
+    public Bitmap getCacheImage(String url) {
+        APICacheStock stock = getCache(url);
+        if (stock == null)
+            return null;
+        return stock.getImage();
+    }
 
-	public static APICache getInstance() {
-		if (Singleton == null)
-			Singleton = new APICache();
-		return Singleton;
-	}
+    private static APICache Singleton = null;
+
+    public static APICache getInstance() {
+        if (Singleton == null)
+            Singleton = new APICache();
+        return Singleton;
+    }
 
 }

@@ -27,5 +27,5 @@ import android.view.View;
  * @author Colin Julien
  */
 public interface ViewAdapter<OBJ> {
-	public View buildView(LayoutInflater inflater, View view, OBJ data);
+    public View buildView(LayoutInflater inflater, View view, OBJ data);
 }
