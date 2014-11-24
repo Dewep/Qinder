@@ -33,9 +33,12 @@ import android.widget.RelativeLayout;
  * @author Colin Julien
  */
 public class ImageViewLoader extends FrameLayout {
-    private RelativeLayout _bloc;
-    private ImageView _image;
-    private ProgressBar _progressbar;
+    private RelativeLayout mBloc;
+    private ImageView mImage;
+    private ProgressBar mProgressbar;
+
+    private static final int SIDE_PIXEL = 25;
+    private static final int MARGIN_PIXEL = 5;
 
     public ImageViewLoader(Context context) {
         super(context);
@@ -52,22 +55,22 @@ public class ImageViewLoader extends FrameLayout {
         initView(context, attrs, defStyle);
     }
 
-    public void initView(Context context, AttributeSet attrs, int defStyle) {
-        _bloc = new RelativeLayout(context, attrs, defStyle);
-        _image = new ImageView(context);
-        _progressbar = new ProgressBar(context);
+    private void initView(Context context, AttributeSet attrs, int defStyle) {
+        mBloc = new RelativeLayout(context, attrs, defStyle);
+        mImage = new ImageView(context);
+        mProgressbar = new ProgressBar(context);
 
-        int size_px = (int) (25 * this.getContext().getResources().getDisplayMetrics().density);
-        int margin_px = (int) (5 * this.getContext().getResources().getDisplayMetrics().density);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(size_px, size_px);
+        int sizePx = (int) (SIDE_PIXEL * this.getContext().getResources().getDisplayMetrics().density);
+        int marginPx = (int) (MARGIN_PIXEL * this.getContext().getResources().getDisplayMetrics().density);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(sizePx, sizePx);
         lp.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-        lp.setMargins(margin_px, margin_px, margin_px, margin_px);
-        _progressbar.setLayoutParams(lp);
-        _progressbar.setVisibility(View.INVISIBLE);
-        _image.setAdjustViewBounds(true);
+        lp.setMargins(marginPx, marginPx, marginPx, marginPx);
+        mProgressbar.setLayoutParams(lp);
+        mProgressbar.setVisibility(View.INVISIBLE);
+        mImage.setAdjustViewBounds(true);
 
-        _bloc.addView(_image);
-        _bloc.addView(_progressbar);
+        mBloc.addView(mImage);
+        mBloc.addView(mProgressbar);
 
         if (attrs != null) {
             int[] attrsArray = new int[] { android.R.attr.layout_width, android.R.attr.layout_height, android.R.attr.maxWidth, android.R.attr.maxHeight };
@@ -77,32 +80,36 @@ public class ImageViewLoader extends FrameLayout {
             int maxWidth = ta.getDimensionPixelSize(2, -1);
             int maxHeight = ta.getDimensionPixelSize(3, -1);
             int scaleType = attrs.getAttributeIntValue("http://schemas.android.com/apk/res/android", "scaleType", -1);
-            _bloc.setLayoutParams(new RelativeLayout.LayoutParams(width, height));
-            _image.setLayoutParams(new RelativeLayout.LayoutParams(width, height));
-            if (scaleType != -1)
-                _image.setScaleType(ImageView.ScaleType.values()[scaleType]);
-            if (maxWidth != -1)
-                _image.setMaxWidth(maxWidth);
-            if (maxHeight != -1)
-                _image.setMaxHeight(maxHeight);
+            mBloc.setLayoutParams(new RelativeLayout.LayoutParams(width, height));
+            mImage.setLayoutParams(new RelativeLayout.LayoutParams(width, height));
+            if (scaleType != -1) {
+                mImage.setScaleType(ImageView.ScaleType.values()[scaleType]);
+            }
+            if (maxWidth != -1) {
+                mImage.setMaxWidth(maxWidth);
+            }
+            if (maxHeight != -1) {
+                mImage.setMaxHeight(maxHeight);
+            }
             ta.recycle();
         }
 
-        addView(_bloc);
+        addView(mBloc);
     }
 
     public ImageView getImage() {
-        return _image;
+        return mImage;
     }
 
     public ProgressBar getProgressBar() {
-        return _progressbar;
+        return mProgressbar;
     }
 
     public void setLoader(Boolean status) {
-        if (status)
-            _progressbar.setVisibility(ProgressBar.VISIBLE);
-        else
-            _progressbar.setVisibility(ProgressBar.GONE);
+        if (status) {
+            mProgressbar.setVisibility(ProgressBar.VISIBLE);
+        } else {
+            mProgressbar.setVisibility(ProgressBar.GONE);
+        }
     }
 }

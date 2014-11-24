@@ -63,13 +63,14 @@ public final class URL {
      */
     private static String addStringBeforeHash(String url, String newParameter) {
         int indexHash = url.indexOf('#');
+        String res;
 
         if (indexHash == -1) {
-            url += newParameter;
+            res = url + newParameter;
         } else {
-            url = url.substring(0, indexHash) + newParameter + url.substring(indexHash);
+            res = url.substring(0, indexHash) + newParameter + url.substring(indexHash);
         }
-        return url;
+        return res;
     }
 
     /**
@@ -90,8 +91,7 @@ public final class URL {
         } catch (UnsupportedEncodingException e) {
             newParameter = "";
         }
-        url = addStringBeforeHash(url, newParameter);
-        return url;
+        return addStringBeforeHash(url, newParameter);
     }
 
 }

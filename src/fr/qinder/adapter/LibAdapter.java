@@ -18,6 +18,7 @@
 package fr.qinder.adapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -31,26 +32,24 @@ import android.widget.BaseAdapter;
  * @author Maigret Aurelien
  * @author Colin Julien
  */
-public class LibAdapter<OBJ> extends BaseAdapter {
-    LayoutInflater inflater;
-    Context context;
-    ArrayList<OBJ> data;
-    ViewAdapter<OBJ> view_adapter = null;
+public class LibAdapter<T> extends BaseAdapter {
+    private LayoutInflater mInflater;
+    private List<T> mData;
+    private ViewAdapter<T> mViewAdapter = null;
 
     public LibAdapter(Context context) {
-        this.context = context;
-        inflater = LayoutInflater.from(context);
-        data = new ArrayList<OBJ>();
+        mInflater = LayoutInflater.from(context);
+        mData = new ArrayList<T>();
     }
 
     @Override
     public int getCount() {
-        return data.size();
+        return mData.size();
     }
 
     @Override
-    public OBJ getItem(int position) {
-        return data.get(position);
+    public T getItem(int position) {
+        return mData.get(position);
     }
 
     @Override
@@ -60,20 +59,21 @@ public class LibAdapter<OBJ> extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (view_adapter == null)
+        if (mViewAdapter == null) {
             return null;
-        return view_adapter.buildView(inflater, convertView, getItem(position));
+        }
+        return mViewAdapter.buildView(mInflater, convertView, getItem(position));
     }
 
-    public void setViewAdapter(ViewAdapter<OBJ> build) {
-        view_adapter = build;
+    public void setViewAdapter(ViewAdapter<T> build) {
+        mViewAdapter = build;
     }
 
-    public ArrayList<OBJ> getData() {
-        return data;
+    public List<T> getData() {
+        return mData;
     }
 
-    public void add(OBJ obj) {
-        data.add(obj);
+    public void add(T obj) {
+        mData.add(obj);
     }
 }

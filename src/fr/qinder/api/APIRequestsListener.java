@@ -29,25 +29,25 @@ import android.app.Activity;
  * @author Colin Julien
  */
 public class APIRequestsListener {
-    private APIGetter _getter;
-    private List<APIRequest> _requests = new ArrayList<APIRequest>();
+    private APIGetter mGetter;
+    private List<APIRequest> mRequests = new ArrayList<APIRequest>();
 
     public APIRequestsListener(Activity activity) {
-        _getter = new APIGetter(activity);
+        mGetter = new APIGetter(activity);
     }
 
     public APIRequestsListener request(APIRequest request) {
-        _requests.add(request);
+        mRequests.add(request);
         return this;
     }
 
     public void cancelTask() {
-        _getter.cancel(true);
+        mGetter.cancel(true);
     }
 
     public void execute() {
-        APIRequest[] array = new APIRequest[_requests.size()];
-        _requests.toArray(array);
-        _getter.execute(array);
+        APIRequest[] array = new APIRequest[mRequests.size()];
+        mRequests.toArray(array);
+        mGetter.execute(array);
     }
 }

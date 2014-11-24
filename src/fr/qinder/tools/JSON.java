@@ -88,7 +88,7 @@ public final class JSON {
      * @param defValue
      *            Default value if key not exists
      * @return The value if path and key exist, defValue else
-     * @throws JSONException 
+     * @throws JSONException
      */
     private static <T> T getValueRec(JSONObject obj, String path, T defValue) throws JSONException {
         int index = path.indexOf('>');
@@ -97,8 +97,8 @@ public final class JSON {
         if (index == -1) {
             res = getValue(obj, path, defValue);
         } else {
-            obj = obj.getJSONObject(path.substring(0, index));
-            res = getValueRec(obj, path.substring(index + 1), defValue);
+            JSONObject objNext = obj.getJSONObject(path.substring(0, index));
+            res = getValueRec(objNext, path.substring(index + 1), defValue);
         }
         return res;
     }

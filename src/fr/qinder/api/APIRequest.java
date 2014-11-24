@@ -18,6 +18,7 @@
 package fr.qinder.api;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -30,13 +31,13 @@ import org.apache.http.message.BasicNameValuePair;
  */
 public abstract class APIRequest {
     public String url;
-    public ArrayList<NameValuePair> headers = new ArrayList<NameValuePair>();
-    public ArrayList<NameValuePair> gets = new ArrayList<NameValuePair>();
-    public ArrayList<NameValuePair> posts = new ArrayList<NameValuePair>();
+    public List<NameValuePair> headers = new ArrayList<NameValuePair>();
+    public List<NameValuePair> gets = new ArrayList<NameValuePair>();
+    public List<NameValuePair> posts = new ArrayList<NameValuePair>();
     public APIResponse response = null;
 
-    public APIRequest(String _url) {
-        url = _url;
+    public APIRequest(String urlPath) {
+        url = urlPath;
     }
 
     public void preExecute() {

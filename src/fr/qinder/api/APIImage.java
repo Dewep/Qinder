@@ -33,39 +33,42 @@ import android.widget.ImageView;
  * @author Colin Julien
  */
 public class APIImage extends AsyncTask<String, Void, Bitmap> {
-    ImageView _image = null;
-    ImageViewLoader _imageloader = null;
-    Boolean _cached = true;
-    APICallback _callback = null;
+    private ImageView mImage = null;
+    private ImageViewLoader mImageloader = null;
+    private Boolean mCached = true;
+    private APICallback mCallback = null;
 
     public APIImage(ImageView image, Boolean cached) {
-        _image = image;
-        _cached = cached;
+        mImage = image;
+        mCached = cached;
     }
 
     public APIImage(View view) {
-        if (view instanceof ImageView)
-            _image = (ImageView) view;
-        else if (view instanceof ImageViewLoader)
-            _imageloader = (ImageViewLoader) view;
+        if (view instanceof ImageView) {
+            mImage = (ImageView) view;
+        } else if (view instanceof ImageViewLoader) {
+            mImageloader = (ImageViewLoader) view;
+        }
     }
 
     public void setCallback(APICallback callback) {
-        _callback = callback;
+        mCallback = callback;
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        if (_imageloader != null)
-            _imageloader.setLoader(true);
+        if (mImageloader != null) {
+            mImageloader.setLoader(true);
+        }
     }
 
     protected Bitmap doInBackground(String... urls) {
         String url = urls[0];
         Bitmap image = null;
-        if (_cached && APICache.getInstance().getCache(url) != null)
+        if (mCached && APICache.getInstance().getCache(url) != null) {
             return APICache.getInstance().getCacheImage(url);
+        }
         try {
             InputStream in = new java.net.URL(url).openStream();
             image = BitmapFactory.decodeStream(in);
@@ -77,13 +80,15 @@ public class APIImage extends AsyncTask<String, Void, Bitmap> {
     }
 
     protected void onPostExecute(Bitmap result) {
-        if (_image != null)
-            _image.setImageBitmap(result);
-        if (_imageloader != null) {
-            _imageloader.getImage().setImageBitmap(result);
-            _imageloader.setLoader(false);
+        if (mImage != null) {
+            mImage.setImageBitmap(result);
         }
-        if (_callback != null)
-            _callback.onResult();
+        if (mImageloader != null) {
+            mImageloader.getImage().setImageBitmap(result);
+            mImageloader.setLoader(false);
+        }
+        if (mCallback != null) {
+            mCallback.onResult();
+        }
     }
 }

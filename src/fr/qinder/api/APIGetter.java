@@ -41,54 +41,50 @@ import org.apache.http.impl.client.DefaultHttpClient;
  * @author Colin Julien
  */
 public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
-    private HttpClient _httpClient;
-    private ProgressDialog _progressDialog;
+    private HttpClient mHttpClient;
+    private ProgressDialog mProgressDialog;
+
+    private static final int HTTP_CODE_SUCCESS = 200;
 
     public APIGetter(Activity dialog) {
         APICookie.getInstance();
-        _httpClient = new DefaultHttpClient();
-        _progressDialog = null;
+        mHttpClient = new DefaultHttpClient();
+        mProgressDialog = null;
         if (dialog != null) {
-            _progressDialog = new ProgressDialog(dialog);
-            _progressDialog.setMessage("Chargement...");
-            _progressDialog.setCanceledOnTouchOutside(false);
-            _progressDialog.show();
-            _progressDialog.setOnCancelListener(new OnCancelListener() {
+            mProgressDialog = new ProgressDialog(dialog);
+            mProgressDialog.setMessage("Chargement...");
+            mProgressDialog.setCanceledOnTouchOutside(false);
+            mProgressDialog.show();
+            mProgressDialog.setOnCancelListener(new OnCancelListener() {
                 @Override
                 public void onCancel(DialogInterface dialog) {
-                    _httpClient.getConnectionManager().shutdown();
+                    mHttpClient.getConnectionManager().shutdown();
                 }
             });
         }
     }
 
-    protected HttpsURLConnection post(String s_url, APIRequest request) {
+    protected HttpsURLConnection post(String sUrl, APIRequest request) {
+        HttpsURLConnection urlConnection;
+        URL url;
         try {
-            URL url = new URL(s_url);
-            HttpsURLConnection url_connection = (HttpsURLConnection) url.openConnection();
-            url_connection.setRequestMethod("GET");
+            url = new URL(sUrl);
+            urlConnection = (HttpsURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("GET");
             if (request.posts.size() != 0) {
-                url_connection.setRequestMethod("POST");
-                url_connection.setDoInput(true);
-                url_connection.setDoOutput(true);
+                urlConnection.setRequestMethod("POST");
+                urlConnection.setDoInput(true);
+                urlConnection.setDoOutput(true);
                 UrlEncodedFormEntity entity = new UrlEncodedFormEntity(request.posts);
-                OutputStream post = url_connection.getOutputStream();
+                OutputStream post = urlConnection.getOutputStream();
                 entity.writeTo(post);
                 post.flush();
             }
-            url_connection.connect();
-            return url_connection;
+            urlConnection.connect();
         } catch (IOException e) {
-            // e.printStackTrace();
-        } catch (Exception e) {
-            // e.printStackTrace();
+            urlConnection = null;
         }
-        return null;
-    }
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
+        return urlConnection;
     }
 
     @Override
@@ -100,7 +96,7 @@ public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
     }
 
     protected InputStream getInputStream(HttpsURLConnection request) throws IOException {
-        if (request.getResponseCode() == 200) {
+        if (request.getResponseCode() == HTTP_CODE_SUCCESS) {
             return request.getInputStream();
         }
         return request.getErrorStream();
@@ -121,7 +117,7 @@ public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
             if (requests[i].isCached() && requests[i].posts.size() == 0 && APICache.getInstance().getCache(requests[i].url) != null) {
                 response.response = APICache.getInstance().getCacheResponse(requests[i].url);
                 response.data = APICache.getInstance().getCacheData(requests[i].url);
-                response.code = 200;
+                response.code = HTTP_CODE_SUCCESS;
                 response.isCache = true;
             } else {
                 response.response = post(requests[i].url, requests[0]);
@@ -131,20 +127,20 @@ public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
                         response.code = response.response.getResponseCode();
                     }
                 } catch (IOException e) {
-                    // e.printStackTrace();
                 }
                 try {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(getInputStream(response.response), "UTF-8"));
                     StringBuilder builder = new StringBuilder();
-                    for (String line = null; (line = reader.readLine()) != null;) {
+                    String line = reader.readLine();
+                    while (line != null) {
                         builder.append(line).append("\n");
+                        line = reader.readLine();
                     }
                     response.data = builder.toString();
-                    if (requests[i].isCached() && requests[i].posts.size() == 0 && response.code == 200) {
+                    if (requests[i].isCached() && requests[i].posts.size() == 0 && response.code == HTTP_CODE_SUCCESS) {
                         APICache.getInstance().addCache(requests[i].url, response.response, response.data);
                     }
                 } catch (Exception e) {
-                    // e.printStackTrace();
                 }
             }
             requests[i].postExecute();
@@ -157,11 +153,10 @@ public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
     protected void onPostExecute(Void response) {
         super.onPostExecute(response);
         try {
-            if (_progressDialog != null && _progressDialog.isShowing()) {
-                _progressDialog.cancel();
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.cancel();
             }
         } catch (Exception e) {
-            // e.printStackTrace();
         }
     }
 }

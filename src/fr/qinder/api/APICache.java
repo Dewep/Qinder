@@ -31,60 +31,66 @@ import android.graphics.Bitmap;
  * @author Colin Julien
  */
 class APICacheStock {
-    private HttpsURLConnection response;
-    private String data;
-    private Bitmap image;
-    private Long time_add;
+    private HttpsURLConnection mResponse;
+    private String nData;
+    private Bitmap mImage;
+    private Long mTimeAdd;
 
-    public APICacheStock(HttpsURLConnection _response, String _data) {
-        response = _response;
-        data = _data;
-        image = null;
-        time_add = System.currentTimeMillis() / 1000;
+    private static final int TO_SECONDS = 1000;
+    private static final int TIME_CACHE_IMAGE = 120;
+    private static final int TIME_CACHE_DATA = 300;
+
+    public APICacheStock(HttpsURLConnection response, String data) {
+        mResponse = response;
+        nData = data;
+        mImage = null;
+        mTimeAdd = System.currentTimeMillis() / TO_SECONDS;
     }
 
-    public APICacheStock(Bitmap _image) {
-        response = null;
-        data = null;
-        image = _image;
-        time_add = System.currentTimeMillis() / 1000;
+    public APICacheStock(Bitmap image) {
+        mResponse = null;
+        nData = null;
+        mImage = image;
+        mTimeAdd = System.currentTimeMillis() / TO_SECONDS;
     }
 
     public boolean isValid() {
-        return ((System.currentTimeMillis() / 1000) - (image == null ? 2 : 5) * 60 < time_add);
+        return ((System.currentTimeMillis() / TO_SECONDS) - (mImage == null ? TIME_CACHE_IMAGE : TIME_CACHE_DATA) < mTimeAdd);
     }
 
     public HttpsURLConnection getResponse() {
-        return response;
+        return mResponse;
     }
 
     public Bitmap getImage() {
-        return image;
+        return mImage;
     }
 
     public String getData() {
-        return data;
+        return nData;
     }
 }
 
 public class APICache {
 
-    private Map<String, APICacheStock> map = new HashMap<String, APICacheStock>();
+    private Map<String, APICacheStock> mMap = new HashMap<String, APICacheStock>();
+    private static APICache sSingleton = null;
 
     public void addCache(String url, HttpsURLConnection response, String data) {
-        map.put(url, new APICacheStock(response, data));
+        mMap.put(url, new APICacheStock(response, data));
     }
 
     public void addCache(String url, Bitmap image) {
-        // map.put(url, new APICacheStock(image));
+        mMap.put(url, new APICacheStock(image));
     }
 
     public APICacheStock getCache(String url) {
-        APICacheStock stock = map.get(url);
-        if (stock == null)
+        APICacheStock stock = mMap.get(url);
+        if (stock == null) {
             return null;
+        }
         if (!stock.isValid()) {
-            map.remove(url);
+            mMap.remove(url);
             return null;
         }
         return stock;
@@ -92,31 +98,33 @@ public class APICache {
 
     public HttpsURLConnection getCacheResponse(String url) {
         APICacheStock stock = getCache(url);
-        if (stock == null)
+        if (stock == null) {
             return null;
+        }
         return stock.getResponse();
     }
 
     public String getCacheData(String url) {
         APICacheStock stock = getCache(url);
-        if (stock == null)
+        if (stock == null) {
             return null;
+        }
         return stock.getData();
     }
 
     public Bitmap getCacheImage(String url) {
         APICacheStock stock = getCache(url);
-        if (stock == null)
+        if (stock == null) {
             return null;
+        }
         return stock.getImage();
     }
 
-    private static APICache Singleton = null;
-
     public static APICache getInstance() {
-        if (Singleton == null)
-            Singleton = new APICache();
-        return Singleton;
+        if (sSingleton == null) {
+            sSingleton = new APICache();
+        }
+        return sSingleton;
     }
 
 }

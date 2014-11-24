@@ -53,7 +53,7 @@ public final class Q {
      * @throws NullPointerException
      *             If activity is null and Q not initialized yet
      */
-    public static final Q init(Activity activity) throws IllegalArgumentException {
+    public static Q init(Activity activity) throws IllegalArgumentException {
         if (Q.sInstance == null) {
             synchronized (Q.class) {
                 if (Q.sInstance == null) {
@@ -70,7 +70,7 @@ public final class Q {
     /**
      * @return Reference to the activity saved
      */
-    public static final Activity get() {
+    public static Activity get() {
         return Q.init(null).getActivity();
     }
 
@@ -79,7 +79,7 @@ public final class Q {
      *            Identifier of the string that you want
      * @return String corresponding to this identifier
      */
-    public static final String getString(int id) {
+    public static String getString(int id) {
         return get().getResources().getString(id);
     }
 

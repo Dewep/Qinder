@@ -30,63 +30,60 @@ import java.util.List;
  * @author Maigret Aurelien
  * @author Colin Julien
  */
-public class APICookie {
+public final class APICookie {
 
-    private static volatile APICookie instance = null;
-    private CookieManager _cookiemanager;
+    private static volatile APICookie sInstance = null;
+    private CookieManager mCookieManager;
 
     private APICookie() {
-        _cookiemanager = new CookieManager();
-        CookieHandler.setDefault(_cookiemanager);
+        mCookieManager = new CookieManager();
+        CookieHandler.setDefault(mCookieManager);
     }
 
-    public final static APICookie getInstance() {
-        if (APICookie.instance == null) {
+    public static final APICookie getInstance() {
+        if (APICookie.sInstance == null) {
             synchronized (APICookie.class) {
-                if (APICookie.instance == null) {
-                    APICookie.instance = new APICookie();
+                if (APICookie.sInstance == null) {
+                    APICookie.sInstance = new APICookie();
                 }
             }
         }
-        return APICookie.instance;
+        return APICookie.sInstance;
     }
 
-    public final static void add(String host, String key, String value, String path) {
+    public static final void add(String host, String key, String value, String path) {
         HttpCookie cookie = new HttpCookie(key, value);
         cookie.setPath(path);
         cookie.setDomain(host);
         try {
-            APICookie.getInstance()._cookiemanager.getCookieStore().add(new URI(host), cookie);
+            APICookie.getInstance().mCookieManager.getCookieStore().add(new URI(host), cookie);
         } catch (URISyntaxException e) {
-            e.printStackTrace();
         }
     }
 
-    public final static void add(String host, String key, String value) {
+    public static final void add(String host, String key, String value) {
         APICookie.add(host, key, value, "/");
     }
 
-    public final static List<HttpCookie> get(String host) {
+    public static final List<HttpCookie> get(String host) {
         try {
-            return APICookie.getInstance()._cookiemanager.getCookieStore().get(new URI(host));
+            return APICookie.getInstance().mCookieManager.getCookieStore().get(new URI(host));
         } catch (URISyntaxException e) {
-            // e.printStackTrace();
         }
         return null;
     }
 
-    public final static void remove(String host) {
+    public static final void remove(String host) {
         try {
             URI uri = new URI(host);
-            for (HttpCookie cookie : APICookie.getInstance()._cookiemanager.getCookieStore().get(uri)) {
-                APICookie.getInstance()._cookiemanager.getCookieStore().remove(uri, cookie);
+            for (HttpCookie cookie : APICookie.getInstance().mCookieManager.getCookieStore().get(uri)) {
+                APICookie.getInstance().mCookieManager.getCookieStore().remove(uri, cookie);
             }
         } catch (URISyntaxException e) {
-            // e.printStackTrace();
         }
     }
 
-    public final static void removeAll() {
-        APICookie.getInstance()._cookiemanager.getCookieStore().removeAll();
+    public static final void removeAll() {
+        APICookie.getInstance().mCookieManager.getCookieStore().removeAll();
     }
 }

@@ -112,11 +112,13 @@ public final class Preferences {
      */
     public static void set(String namespace, String key, String value) {
         SharedPreferences pref = Q.get().getSharedPreferences(namespace, Context.MODE_PRIVATE);
-        if (pref == null)
+        if (pref == null) {
             return;
+        }
         SharedPreferences.Editor editor = pref.edit();
-        if (editor == null)
+        if (editor == null) {
             return;
+        }
         editor.putString(key, value);
         editor.commit();
     }
@@ -131,11 +133,13 @@ public final class Preferences {
      */
     public static void set(String namespace, String key, int value) {
         SharedPreferences pref = Q.get().getSharedPreferences(namespace, Context.MODE_PRIVATE);
-        if (pref == null)
+        if (pref == null) {
             return;
+        }
         SharedPreferences.Editor editor = pref.edit();
-        if (editor == null)
+        if (editor == null) {
             return;
+        }
         editor.putInt(key, value);
         editor.commit();
     }
@@ -150,11 +154,13 @@ public final class Preferences {
      */
     public static void set(String namespace, String key, boolean value) {
         SharedPreferences pref = Q.get().getSharedPreferences(namespace, Context.MODE_PRIVATE);
-        if (pref == null)
+        if (pref == null) {
             return;
+        }
         SharedPreferences.Editor editor = pref.edit();
-        if (editor == null)
+        if (editor == null) {
             return;
+        }
         editor.putBoolean(key, value);
         editor.commit();
     }
