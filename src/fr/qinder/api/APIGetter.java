@@ -17,10 +17,6 @@
 
 package fr.qinder.api;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.os.AsyncTask;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,9 +26,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 /**
  * TODO: Comments this class
@@ -41,27 +35,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
  * @author Colin Julien
  */
 public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
-    private HttpClient mHttpClient;
-    private ProgressDialog mProgressDialog;
 
     private static final int HTTP_CODE_SUCCESS = 200;
 
-    public APIGetter(Activity dialog) {
+    public APIGetter() {
         APICookie.getInstance();
-        mHttpClient = new DefaultHttpClient();
-        mProgressDialog = null;
-        if (dialog != null) {
-            mProgressDialog = new ProgressDialog(dialog);
-            mProgressDialog.setMessage("Chargement...");
-            mProgressDialog.setCanceledOnTouchOutside(false);
-            mProgressDialog.show();
-            mProgressDialog.setOnCancelListener(new OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    mHttpClient.getConnectionManager().shutdown();
-                }
-            });
-        }
     }
 
     protected HttpsURLConnection post(String sUrl, APIRequest request) {
@@ -96,10 +74,53 @@ public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
     }
 
     protected InputStream getInputStream(HttpsURLConnection request) throws IOException {
+        InputStream res;
+
         if (request.getResponseCode() == HTTP_CODE_SUCCESS) {
-            return request.getInputStream();
+            res = request.getInputStream();
+        } else {
+            res = request.getErrorStream();
         }
-        return request.getErrorStream();
+        return res;
+    }
+
+    private void readResponse(APIRequest request) {
+        APIResponse response = request.response;
+
+        try {
+            response.code = response.response.getResponseCode();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(getInputStream(response.response), "UTF-8"));
+            StringBuilder builder = new StringBuilder();
+            String line = reader.readLine();
+            while (line != null) {
+                builder.append(line).append("\n");
+                line = reader.readLine();
+            }
+            response.data = builder.toString();
+            if (request.isCached() && request.posts.size() == 0 && response.code == HTTP_CODE_SUCCESS) {
+                APICache.getInstance().addCache(request.url, response.response, response.data);
+            }
+        } catch (IOException e) {
+            response.code = 0;
+            response.data = null;
+        }
+    }
+
+    private void executeRequest(APIRequest request) {
+        APIResponse response = request.response;
+
+        if (request.isCached() && request.posts.size() == 0 && APICache.getInstance().getCache(request.url) != null) {
+            response.response = APICache.getInstance().getCacheResponse(request.url);
+            response.data = APICache.getInstance().getCacheData(request.url);
+            response.code = HTTP_CODE_SUCCESS;
+            response.isCache = true;
+        } else {
+            response.response = post(request.url, request);
+            response.isCache = false;
+            if (response.response != null) {
+                readResponse(request);
+            }
+        }
     }
 
     @Override
@@ -114,49 +135,11 @@ public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
             for (int j = 0; j < requests[i].gets.size(); j++) {
                 requests[i].url = fr.qinder.tools.URL.addParameter(requests[i].url, requests[i].gets.get(j).getName(), requests[i].gets.get(j).getValue());
             }
-            if (requests[i].isCached() && requests[i].posts.size() == 0 && APICache.getInstance().getCache(requests[i].url) != null) {
-                response.response = APICache.getInstance().getCacheResponse(requests[i].url);
-                response.data = APICache.getInstance().getCacheData(requests[i].url);
-                response.code = HTTP_CODE_SUCCESS;
-                response.isCache = true;
-            } else {
-                response.response = post(requests[i].url, requests[0]);
-                response.isCache = false;
-                try {
-                    if (response.response != null) {
-                        response.code = response.response.getResponseCode();
-                    }
-                } catch (IOException e) {
-                }
-                try {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(getInputStream(response.response), "UTF-8"));
-                    StringBuilder builder = new StringBuilder();
-                    String line = reader.readLine();
-                    while (line != null) {
-                        builder.append(line).append("\n");
-                        line = reader.readLine();
-                    }
-                    response.data = builder.toString();
-                    if (requests[i].isCached() && requests[i].posts.size() == 0 && response.code == HTTP_CODE_SUCCESS) {
-                        APICache.getInstance().addCache(requests[i].url, response.response, response.data);
-                    }
-                } catch (Exception e) {
-                }
-            }
+            executeRequest(requests[i]);
             requests[i].postExecute();
             publishProgress(requests[i]);
         }
         return null;
     }
 
-    @Override
-    protected void onPostExecute(Void response) {
-        super.onPostExecute(response);
-        try {
-            if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                mProgressDialog.cancel();
-            }
-        } catch (Exception e) {
-        }
-    }
 }
