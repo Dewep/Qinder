@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
+import org.apache.http.HttpStatus;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 
 /**
@@ -35,8 +36,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
  * @author Colin Julien
  */
 public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
-
-    private static final int HTTP_CODE_SUCCESS = 200;
 
     public APIGetter() {
         APICookie.getInstance();
@@ -76,7 +75,7 @@ public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
     protected InputStream getInputStream(HttpsURLConnection request) throws IOException {
         InputStream res;
 
-        if (request.getResponseCode() == HTTP_CODE_SUCCESS) {
+        if (request.getResponseCode() == HttpStatus.SC_OK) {
             res = request.getInputStream();
         } else {
             res = request.getErrorStream();
@@ -97,7 +96,7 @@ public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
                 line = reader.readLine();
             }
             response.data = builder.toString();
-            if (request.isCached() && request.posts.size() == 0 && response.code == HTTP_CODE_SUCCESS) {
+            if (request.isCached() && request.posts.size() == 0 && response.code == HttpStatus.SC_OK) {
                 APICache.getInstance().addCache(request.url, response.response, response.data);
             }
         } catch (IOException e) {
@@ -112,7 +111,7 @@ public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
         if (request.isCached() && request.posts.size() == 0 && APICache.getInstance().getCache(request.url) != null) {
             response.response = APICache.getInstance().getCacheResponse(request.url);
             response.data = APICache.getInstance().getCacheData(request.url);
-            response.code = HTTP_CODE_SUCCESS;
+            response.code = HttpStatus.SC_OK;
             response.isCache = true;
         } else {
             response.response = post(request.url, request);
