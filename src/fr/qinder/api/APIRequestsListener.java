@@ -20,8 +20,6 @@ package fr.qinder.api;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
-
 /**
  * TODO: Comments this class
  * 
@@ -32,8 +30,8 @@ public class APIRequestsListener {
     private APIGetter mGetter;
     private List<APIRequest> mRequests = new ArrayList<APIRequest>();
 
-    public APIRequestsListener(Activity activity) {
-        mGetter = new APIGetter(activity);
+    public APIRequestsListener() {
+        mGetter = new APIGetter();
     }
 
     public APIRequestsListener request(APIRequest request) {
