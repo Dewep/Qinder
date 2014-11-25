@@ -30,6 +30,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -43,8 +44,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
     private HttpClient mHttpClient;
     private ProgressDialog mProgressDialog;
-
-    private static final int HTTP_CODE_SUCCESS = 200;
 
     public APIGetter(Activity dialog) {
         APICookie.getInstance();
@@ -96,7 +95,7 @@ public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
     }
 
     protected InputStream getInputStream(HttpsURLConnection request) throws IOException {
-        if (request.getResponseCode() == HTTP_CODE_SUCCESS) {
+        if (request.getResponseCode() == HttpStatus.SC_OK) {
             return request.getInputStream();
         }
         return request.getErrorStream();
@@ -117,7 +116,7 @@ public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
             if (requests[i].isCached() && requests[i].posts.size() == 0 && APICache.getInstance().getCache(requests[i].url) != null) {
                 response.response = APICache.getInstance().getCacheResponse(requests[i].url);
                 response.data = APICache.getInstance().getCacheData(requests[i].url);
-                response.code = HTTP_CODE_SUCCESS;
+                response.code = HttpStatus.SC_OK;
                 response.isCache = true;
             } else {
                 response.response = post(requests[i].url, requests[0]);
@@ -137,7 +136,7 @@ public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
                         line = reader.readLine();
                     }
                     response.data = builder.toString();
-                    if (requests[i].isCached() && requests[i].posts.size() == 0 && response.code == HTTP_CODE_SUCCESS) {
+                    if (requests[i].isCached() && requests[i].posts.size() == 0 && response.code == HttpStatus.SC_OK) {
                         APICache.getInstance().addCache(requests[i].url, response.response, response.data);
                     }
                 } catch (Exception e) {
