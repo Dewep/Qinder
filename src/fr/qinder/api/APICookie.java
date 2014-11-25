@@ -40,7 +40,7 @@ public final class APICookie {
         CookieHandler.setDefault(mCookieManager);
     }
 
-    public static final APICookie getInstance() {
+    public static APICookie getInstance() {
         if (APICookie.sInstance == null) {
             synchronized (APICookie.class) {
                 if (APICookie.sInstance == null) {
@@ -51,39 +51,43 @@ public final class APICookie {
         return APICookie.sInstance;
     }
 
-    public static final void add(String host, String key, String value, String path) {
+    public static void add(String host, String key, String value, String path) {
         HttpCookie cookie = new HttpCookie(key, value);
         cookie.setPath(path);
         cookie.setDomain(host);
         try {
             APICookie.getInstance().mCookieManager.getCookieStore().add(new URI(host), cookie);
         } catch (URISyntaxException e) {
+        	// cookie not added
         }
     }
 
-    public static final void add(String host, String key, String value) {
+    public static void add(String host, String key, String value) {
         APICookie.add(host, key, value, "/");
     }
 
-    public static final List<HttpCookie> get(String host) {
+    public static List<HttpCookie> get(String host) {
+    	List<HttpCookie> cookies = null;
         try {
-            return APICookie.getInstance().mCookieManager.getCookieStore().get(new URI(host));
+            cookies = APICookie.getInstance().mCookieManager.getCookieStore().get(new URI(host));
         } catch (URISyntaxException e) {
+        	// cookies stays NULL 
         }
-        return null;
+        return cookies;
     }
 
-    public static final void remove(String host) {
+    public static void remove(String host) {
         try {
             URI uri = new URI(host);
             for (HttpCookie cookie : APICookie.getInstance().mCookieManager.getCookieStore().get(uri)) {
                 APICookie.getInstance().mCookieManager.getCookieStore().remove(uri, cookie);
             }
         } catch (URISyntaxException e) {
+        	// cookie not removed
         }
     }
 
-    public static final void removeAll() {
+    public static void removeAll() {
         APICookie.getInstance().mCookieManager.getCookieStore().removeAll();
     }
 }
