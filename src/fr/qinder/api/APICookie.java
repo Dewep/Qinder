@@ -58,7 +58,7 @@ public final class APICookie {
         try {
             APICookie.getInstance().mCookieManager.getCookieStore().add(new URI(host), cookie);
         } catch (URISyntaxException e) {
-        	// cookie not added
+            // cookie not added
         }
     }
 
@@ -67,11 +67,11 @@ public final class APICookie {
     }
 
     public static List<HttpCookie> get(String host) {
-    	List<HttpCookie> cookies = null;
+        List<HttpCookie> cookies = null;
         try {
             cookies = APICookie.getInstance().mCookieManager.getCookieStore().get(new URI(host));
         } catch (URISyntaxException e) {
-        	// cookies stays NULL 
+            // cookies stays NULL
         }
         return cookies;
     }
@@ -83,7 +83,7 @@ public final class APICookie {
                 APICookie.getInstance().mCookieManager.getCookieStore().remove(uri, cookie);
             }
         } catch (URISyntaxException e) {
-        	// cookie not removed
+            // cookie not removed
         }
     }
 

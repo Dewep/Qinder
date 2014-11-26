@@ -33,7 +33,6 @@ import android.widget.RelativeLayout;
  * @author Colin Julien
  */
 public class ImageViewLoader extends FrameLayout {
-    private RelativeLayout mBloc;
     private ImageView mImage;
     private ProgressBar mProgressbar;
 
@@ -56,7 +55,7 @@ public class ImageViewLoader extends FrameLayout {
     }
 
     private void initView(Context context, AttributeSet attrs, int defStyle) {
-        mBloc = new RelativeLayout(context, attrs, defStyle);
+        RelativeLayout mBloc = new RelativeLayout(context, attrs, defStyle);
         mImage = new ImageView(context);
         mProgressbar = new ProgressBar(context);
 

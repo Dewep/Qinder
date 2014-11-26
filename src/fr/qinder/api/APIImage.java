@@ -17,8 +17,8 @@
 
 package fr.qinder.api;
 
+import java.io.IOException;
 import java.io.InputStream;
-
 import fr.qinder.imageviewloader.ImageViewLoader;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -65,16 +65,17 @@ public class APIImage extends AsyncTask<String, Void, Bitmap> {
 
     protected Bitmap doInBackground(String... urls) {
         String url = urls[0];
-        Bitmap image = null;
-        if (mCached && APICache.getInstance().getCache(url) != null) {
-            return APICache.getInstance().getCacheImage(url);
-        }
+        Bitmap image;
         try {
-            InputStream in = new java.net.URL(url).openStream();
-            image = BitmapFactory.decodeStream(in);
-            APICache.getInstance().addCache(url, image);
-        } catch (Exception e) {
-            e.printStackTrace();
+            if (mCached && APICache.getInstance().getCache(url) != null) {
+                image = APICache.getInstance().getCacheImage(url);
+            } else {
+                InputStream in = new java.net.URL(url).openStream();
+                image = BitmapFactory.decodeStream(in);
+                APICache.getInstance().addCache(url, image);
+            }
+        } catch (IOException e) {
+            image = null;
         }
         return image;
     }
