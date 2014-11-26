@@ -26,8 +26,34 @@ import javax.net.ssl.HttpsURLConnection;
  * @author Colin Julien
  */
 public class APIResponse {
-    public HttpsURLConnection response;
-    public String data;
-    public int code;
-    public Boolean isCache;
+
+	private HttpsURLConnection response;
+	private String data;
+	private int code;
+	private Boolean isCache;
+    
+	public HttpsURLConnection getResponse() {
+		return response;
+	}
+	public void setResponse(HttpsURLConnection response) {
+		this.response = response;
+	}
+	public String getData() {
+		return data;
+	}
+	public void setData(String data) {
+		this.data = data;
+	}
+	public int getCode() {
+		return code;
+	}
+	public void setCode(int code) {
+		this.code = code;
+	}
+	public Boolean getIsCache() {
+		return isCache;
+	}
+	public void setIsCache(Boolean isCache) {
+		this.isCache = isCache;
+	}
 }

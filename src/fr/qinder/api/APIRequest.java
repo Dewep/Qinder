@@ -30,11 +30,11 @@ import org.apache.http.message.BasicNameValuePair;
  * @author Colin Julien
  */
 public abstract class APIRequest {
-    public String url;
-    public List<NameValuePair> headers = new ArrayList<NameValuePair>();
-    public List<NameValuePair> gets = new ArrayList<NameValuePair>();
-    public List<NameValuePair> posts = new ArrayList<NameValuePair>();
-    public APIResponse response = null;
+    private String url;
+    private List<NameValuePair> headers = new ArrayList<NameValuePair>();
+    private List<NameValuePair> gets = new ArrayList<NameValuePair>();
+    private List<NameValuePair> posts = new ArrayList<NameValuePair>();
+    protected APIResponse response = null;
 
     public APIRequest(String urlPath) {
         url = urlPath;
@@ -63,4 +63,32 @@ public abstract class APIRequest {
     public void addHeader(String key, String value) {
         headers.add(new BasicNameValuePair(key, value));
     }
+
+	public List<NameValuePair> getHeaders() {
+		return headers;
+	}
+
+	public List<NameValuePair> getGets() {
+		return gets;
+	}
+
+	public List<NameValuePair> getPosts() {
+		return posts;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public APIResponse getResponse() {
+		return response;
+	}
+
+	public void setResponse(APIResponse response) {
+		this.response = response;
+	}
 }
