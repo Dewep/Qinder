@@ -48,11 +48,11 @@ public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
             url = new URL(sUrl);
             urlConnection = (HttpsURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
-            if (request.posts.size() != 0) {
+            if (request.getPosts().size() != 0) {
                 urlConnection.setRequestMethod("POST");
                 urlConnection.setDoInput(true);
                 urlConnection.setDoOutput(true);
-                UrlEncodedFormEntity entity = new UrlEncodedFormEntity(request.posts);
+                UrlEncodedFormEntity entity = new UrlEncodedFormEntity(request.getPosts());
                 OutputStream post = urlConnection.getOutputStream();
                 entity.writeTo(post);
                 post.flush();
@@ -84,39 +84,39 @@ public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
     }
 
     private void readResponse(APIRequest request) {
-        APIResponse response = request.response;
+        APIResponse response = request.getResponse();
 
         try {
-            response.code = response.response.getResponseCode();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(getInputStream(response.response), "UTF-8"));
+            response.setCode(response.getResponse().getResponseCode());
+            BufferedReader reader = new BufferedReader(new InputStreamReader(getInputStream(response.getResponse()), "UTF-8"));
             StringBuilder builder = new StringBuilder();
             String line = reader.readLine();
             while (line != null) {
                 builder.append(line).append("\n");
                 line = reader.readLine();
             }
-            response.data = builder.toString();
-            if (request.isCached() && request.posts.size() == 0 && response.code == HttpStatus.SC_OK) {
-                APICache.getInstance().addCache(request.url, response.response, response.data);
+            response.setData(builder.toString());
+            if (request.isCached() && request.getPosts().size() == 0 && response.getCode() == HttpStatus.SC_OK) {
+                APICache.getInstance().addCache(request.getUrl(), response.getResponse(), response.getData());
             }
         } catch (IOException e) {
-            response.code = 0;
-            response.data = null;
+            response.setCode(0);
+            response.setData(null);
         }
     }
 
     private void executeRequest(APIRequest request) {
-        APIResponse response = request.response;
+        APIResponse response = request.getResponse();
 
-        if (request.isCached() && request.posts.size() == 0 && APICache.getInstance().getCache(request.url) != null) {
-            response.response = APICache.getInstance().getCacheResponse(request.url);
-            response.data = APICache.getInstance().getCacheData(request.url);
-            response.code = HttpStatus.SC_OK;
-            response.isCache = true;
+        if (request.isCached() && request.getPosts().size() == 0 && APICache.getInstance().getCache(request.getUrl()) != null) {
+            response.setResponse(APICache.getInstance().getCacheResponse(request.getUrl()));
+            response.setData(APICache.getInstance().getCacheData(request.getUrl()));
+            response.setCode(HttpStatus.SC_OK);
+            response.setIsCache(true);
         } else {
-            response.response = post(request.url, request);
-            response.isCache = false;
-            if (response.response != null) {
+            response.setResponse(post(request.getUrl(), request));
+            response.setIsCache(false);
+            if (response.getResponse() != null) {
                 readResponse(request);
             }
         }
@@ -125,14 +125,14 @@ public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
     @Override
     protected Void doInBackground(APIRequest... requests) {
         for (int i = 0; i < requests.length; i++) {
-            requests[i].response = new APIResponse();
-            APIResponse response = requests[i].response;
-            response.code = 0;
-            response.data = null;
-            response.response = null;
+            requests[i].setResponse(new APIResponse());
+            APIResponse response = requests[i].getResponse();
+            response.setCode(0);
+            response.setData(null);
+            response.setResponse(null);
             requests[i].preExecute();
-            for (int j = 0; j < requests[i].gets.size(); j++) {
-                requests[i].url = fr.qinder.tools.URL.addParameter(requests[i].url, requests[i].gets.get(j).getName(), requests[i].gets.get(j).getValue());
+            for (int j = 0; j < requests[i].getGets().size(); j++) {
+                requests[i].setUrl(fr.qinder.tools.URL.addParameter(requests[i].getUrl(), requests[i].getGets().get(j).getName(), requests[i].getGets().get(j).getValue()));
             }
             executeRequest(requests[i]);
             requests[i].postExecute();
