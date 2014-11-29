@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.qinder.imageviewloader;
+package fr.qinder.layout;
 
 import android.content.Context;
 import android.content.res.TypedArray;

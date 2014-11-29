@@ -19,7 +19,8 @@ package fr.qinder.api;
 
 import java.io.IOException;
 import java.io.InputStream;
-import fr.qinder.imageviewloader.ImageViewLoader;
+
+import fr.qinder.layout.ImageViewLoader;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
