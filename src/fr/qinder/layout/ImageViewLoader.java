@@ -54,6 +54,20 @@ public class ImageViewLoader extends FrameLayout {
         initView(context, attrs, defStyle);
     }
 
+    private int getDimensionValue(TypedArray ta, int index, int defaultValue) {
+        int result;
+        try {
+            result = ta.getInt(index, defaultValue);
+        } catch (NumberFormatException e) {
+            try {
+                result = ta.getDimensionPixelSize(index, defaultValue);
+            } catch (UnsupportedOperationException e2) {
+                result = defaultValue;
+            }
+        }
+        return result;
+    }
+
     private void initView(Context context, AttributeSet attrs, int defStyle) {
         RelativeLayout mBloc = new RelativeLayout(context, attrs, defStyle);
         mImage = new ImageView(context);
@@ -74,10 +88,10 @@ public class ImageViewLoader extends FrameLayout {
         if (attrs != null) {
             int[] attrsArray = new int[] { android.R.attr.layout_width, android.R.attr.layout_height, android.R.attr.maxWidth, android.R.attr.maxHeight };
             TypedArray ta = context.obtainStyledAttributes(attrs, attrsArray);
-            int width = ta.getInt(0, -2);
-            int height = ta.getInt(1, -2);
-            int maxWidth = ta.getDimensionPixelSize(2, -1);
-            int maxHeight = ta.getDimensionPixelSize(3, -1);
+            int width = getDimensionValue(ta, 0, -2);
+            int height = getDimensionValue(ta, 1, -2);
+            int maxWidth = getDimensionValue(ta, 2, -1);
+            int maxHeight = getDimensionValue(ta, 3, -1);
             int scaleType = attrs.getAttributeIntValue("http://schemas.android.com/apk/res/android", "scaleType", -1);
             mBloc.setLayoutParams(new RelativeLayout.LayoutParams(width, height));
             mImage.setLayoutParams(new RelativeLayout.LayoutParams(width, height));
