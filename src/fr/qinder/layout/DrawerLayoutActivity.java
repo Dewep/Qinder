@@ -19,6 +19,7 @@ package fr.qinder.layout;
 
 import fr.qinder.R;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -42,7 +43,7 @@ public class DrawerLayoutActivity extends ActionBarActivity implements OnClickLi
         mNavigationFragment.getView().findViewById(id).setOnClickListener(this);
     }
 
-    protected void setContentFragment(String className) {
+    public void setContentFragment(String className, boolean withHistory) {
         DrawerLayoutFragment fragment;
         try {
             fragment = (DrawerLayoutFragment) Class.forName(className).newInstance();
@@ -54,7 +55,12 @@ public class DrawerLayoutActivity extends ActionBarActivity implements OnClickLi
             fragment = null;
         }
         if (fragment != null) {
-            getFragmentManager().beginTransaction().replace(mDrawerLayoutContent, fragment).commit();
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.replace(mDrawerLayoutContent, fragment);
+            if (withHistory) {
+                ft.addToBackStack(null);
+            }
+            ft.commit();
             getSupportActionBar().setTitle(fragment.getTitle());
         }
     }
@@ -62,7 +68,7 @@ public class DrawerLayoutActivity extends ActionBarActivity implements OnClickLi
     @Override
     public void onClick(View v) {
         if (mMapListener.get(v.getId()) != null) {
-            setContentFragment(mMapListener.get(v.getId()));
+            setContentFragment(mMapListener.get(v.getId()), true);
             mDrawerLayout.closeDrawer(mNavigationFragment.getView());
         }
     }
@@ -77,7 +83,7 @@ public class DrawerLayoutActivity extends ActionBarActivity implements OnClickLi
         mNavigationFragment = getFragmentManager().findFragmentById(idDrawerLayoutNavigationFragment);
         mDrawerLayoutContent = idDrawerLayoutContent;
 
-        setContentFragment(defaultClassName);
+        setContentFragment(defaultClassName, false);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
@@ -88,6 +94,17 @@ public class DrawerLayoutActivity extends ActionBarActivity implements OnClickLi
                 mDrawerToggle.syncState();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+            DrawerLayoutFragment fragment = (DrawerLayoutFragment) getFragmentManager().findFragmentById(mDrawerLayoutContent); 
+            getSupportActionBar().setTitle(fragment.getTitle());
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
