@@ -54,20 +54,6 @@ public class ImageViewLoader extends FrameLayout {
         initView(context, attrs, defStyle);
     }
 
-    private int getDimensionValue(TypedArray ta, int index, int defaultValue) {
-        int result;
-        try {
-            result = ta.getInt(index, defaultValue);
-        } catch (NumberFormatException e) {
-            try {
-                result = ta.getDimensionPixelSize(index, defaultValue);
-            } catch (UnsupportedOperationException e2) {
-                result = defaultValue;
-            }
-        }
-        return result;
-    }
-
     private void initView(Context context, AttributeSet attrs, int defStyle) {
         RelativeLayout mBloc = new RelativeLayout(context, attrs, defStyle);
         mImage = new ImageView(context);
@@ -108,6 +94,20 @@ public class ImageViewLoader extends FrameLayout {
         }
 
         addView(mBloc);
+    }
+
+    protected int getDimensionValue(TypedArray ta, int index, int defaultValue) {
+        int result;
+        try {
+            result = ta.getInt(index, defaultValue);
+        } catch (NumberFormatException e) {
+            try {
+                result = ta.getDimensionPixelSize(index, defaultValue);
+            } catch (UnsupportedOperationException e2) {
+                result = defaultValue;
+            }
+        }
+        return result;
     }
 
     public ImageView getImage() {
