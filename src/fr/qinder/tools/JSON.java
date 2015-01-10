@@ -17,6 +17,7 @@
 
 package fr.qinder.tools;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -56,6 +57,27 @@ public final class JSON {
     }
 
     /**
+     * Convert string to a JSONArray.
+     * 
+     * @param str
+     *            String of the JSON to parse
+     * @return JSONArray of the string or null if not parsable
+     */
+    public static JSONArray getArray(String str) {
+        JSONArray obj;
+        try {
+            if (str != null) {
+                obj = new JSONArray(str);
+            } else {
+                obj = null;
+            }
+        } catch (JSONException e) {
+            obj = null;
+        }
+        return obj;
+    }
+
+    /**
      * Get value of the key from a JSONObject. If the key not exists in the
      * JSONObject, defValue is return.
      * 
@@ -74,8 +96,16 @@ public final class JSON {
             res = (T) ((Double) obj.getDouble(key));
         } else if (defValue instanceof Integer) {
             res = (T) ((Integer) obj.getInt(key));
+        } else if (defValue instanceof Boolean) {
+            res = (T) ((Boolean) obj.getBoolean(key));
+        } else if (defValue instanceof Long) {
+            res = (T) ((Long) obj.getLong(key));
         } else if (defValue instanceof String) {
             res = (T) obj.getString(key);
+        } else if (defValue instanceof JSONObject) {
+            res = (T) obj.getJSONObject(key);
+        } else if (defValue instanceof JSONArray) {
+            res = (T) obj.getJSONArray(key);
         }
         return res;
     }

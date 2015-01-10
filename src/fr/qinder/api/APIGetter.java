@@ -18,6 +18,8 @@
 package fr.qinder.api;
 
 import android.os.AsyncTask;
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -108,6 +110,7 @@ public class APIGetter extends AsyncTask<APIRequest, APIRequest, Void> {
     private void executeRequest(APIRequest request) {
         APIResponse response = request.getResponse();
 
+        Log.i("Request APIGetter",  (request.getPosts().size() == 0 ? "GET" : "POST") + " " + request.getUrl());
         if (request.isCached() && request.getPosts().size() == 0 && APICache.getInstance().getCache(request.getUrl()) != null) {
             response.setResponse(APICache.getInstance().getCacheResponse(request.getUrl()));
             response.setData(APICache.getInstance().getCacheData(request.getUrl()));

@@ -19,6 +19,7 @@ package fr.qinder.tools;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Locale;
 
 /**
@@ -62,6 +63,28 @@ public final class ConvertDate {
      */
     public static SimpleDateFormat formatUS(String format) {
         return new SimpleDateFormat(format, Locale.US);
+    }
+
+    public static String getFormatUS(String format, Calendar date) {
+        return formatUS(format).format(date.getTime());
+    }
+
+    /**
+     * Constructs a new SimpleDateFormat using the specified non-localized
+     * pattern and the DateFormatSymbols and Calendar for the locale Locale.US.
+     * http://developer.android.com/reference/java/text/SimpleDateFormat.html
+     * 
+     * @param format
+     *            String of the format
+     * @return New instance of SimpleDateFormat(format, Locale.US)
+     * @see SimpleDateFormat
+     */
+    public static SimpleDateFormat formatDefault(String format) {
+        return new SimpleDateFormat(format, Locale.getDefault());
+    }
+
+    public static String getFormatDefault(String format, Calendar date) {
+        return formatDefault(format).format(date.getTime());
     }
 
     /**

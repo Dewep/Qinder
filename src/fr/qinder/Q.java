@@ -83,4 +83,15 @@ public final class Q {
         return get().getResources().getString(id);
     }
 
+    /**
+     * @param id
+     *            Identifier of the string that you want
+     * @param formatArgs
+     *            The format arguments that will be used for substitution.
+     * @return String corresponding to this identifier
+     */
+    public static String getString(int id, Object... formatArgs) {
+        return get().getResources().getString(id, formatArgs);
+    }
+
 }
