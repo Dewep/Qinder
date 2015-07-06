@@ -27,6 +27,7 @@ import android.content.SharedPreferences;
  * 
  * @author Maigret Aurelien
  * @author Colin Julien
+ * @author Simon Pierre-Alain
  */
 public final class Preferences {
 
@@ -143,7 +144,7 @@ public final class Preferences {
         SharedPreferences.Editor editor = getEditor(namespace);
         if (editor != null) {
             editor.putString(key, value);
-            editor.commit();
+            editor.apply();
         }
     }
 
@@ -159,7 +160,7 @@ public final class Preferences {
         SharedPreferences.Editor editor = getEditor(namespace);
         if (editor != null) {
             editor.putInt(key, value);
-            editor.commit();
+            editor.apply();
         }
     }
 
@@ -175,7 +176,7 @@ public final class Preferences {
         SharedPreferences.Editor editor = getEditor(namespace);
         if (editor != null) {
             editor.putBoolean(key, value);
-            editor.commit();
+            editor.apply();
         }
     }
 
